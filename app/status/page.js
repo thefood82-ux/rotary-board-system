@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseSessionClient } from "@/lib/supabase-session";
-import { getProfileByUserId } from "@/lib/data";
+import { getProfileByUserId, getCurrentTerm, getMeetings } from "@/lib/data";
 import LogoutButton from "@/components/LogoutButton";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +26,9 @@ export default async function StatusPage() {
   if (!user) redirect("/login");
 
   const profile = await getProfileByUserId(user.id);
+  const currentTerm = await getCurrentTerm();
+  const meetings =
+    profile?.approval_status === "approved" && currentTerm ? await getMeetings(currentTerm.id) : [];
 
   return (
     <main>
@@ -53,6 +56,29 @@ export default async function StatusPage() {
           </>
         )}
       </section>
+
+      {profile?.approval_status === "approved" && (
+        <section className="card">
+          <h2>이사회 소집 목록</h2>
+          {meetings.length === 0 ? (
+            <p className="empty-state">등록된 회의가 없습니다.</p>
+          ) : (
+            <div className="meeting-list">
+              {meetings.map((m) => (
+                <div key={m.id} className="meeting-list-item">
+                  <span>
+                    {m.meeting_date} {m.agenda ? `· ${m.agenda}` : ""}{" "}
+                    <span className={`badge badge-${m.status}`}>{m.status === "open" ? "진행중" : "마감됨"}</span>
+                  </span>
+                  <Link href={`/meetings/${m.id}/respond`} className="btn btn-secondary">
+                    응답하기
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       <LogoutButton />
     </main>

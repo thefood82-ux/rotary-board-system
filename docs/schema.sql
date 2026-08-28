@@ -94,3 +94,8 @@ create unique index idx_profiles_board_member_id_approved
 create unique index idx_terms_only_one_current
   on terms(is_current)
   where is_current = true;
+
+-- 2026-08-29: 회의 마감 처리 기록 (요구사항 3-3~3-6, 성원현황 화면 "마감" 버튼용)
+alter table meetings
+  add column closed_by uuid references profiles(id),
+  add column closed_at timestamptz;

@@ -10,6 +10,7 @@ export default function HomePage() {
         <Link href="/signup">회원가입</Link>
         <Link href="/members">명부 관리</Link>
         <Link href="/admin/approvals">가입 승인 관리</Link>
+        <Link href="/admin/meetings">이사회 소집 등록</Link>
       </nav>
     </main>
   );

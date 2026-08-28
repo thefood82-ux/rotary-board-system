@@ -381,6 +381,70 @@ button:disabled {
   color: var(--error-text);
 }
 
+.badge-open {
+  background: var(--rotary-blue-light);
+  color: var(--rotary-blue-dark);
+}
+
+.badge-closed {
+  background: #ececec;
+  color: var(--text-muted);
+}
+
+.badge-attend {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.badge-delegate {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
+.badge-absent {
+  background: #ececec;
+  color: var(--text-muted);
+}
+
+a.btn,
+a.btn-secondary,
+a.btn-danger,
+a.btn-gold {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.radio-group label {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  font-weight: 400 !important;
+  color: var(--text) !important;
+}
+
+.quorum-banner {
+  padding: 1rem 1.1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.quorum-banner.met {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.quorum-banner.unmet {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
 .meta-line {
   color: var(--text-muted);
   font-size: 0.92rem;
@@ -390,4 +454,30 @@ button:disabled {
 .empty-state {
   color: var(--text-muted);
   padding: 1rem 0;
+}
+
+.card ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.card li {
+  padding: 0.2rem 0;
+}
+
+.meeting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.meeting-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex-wrap: wrap;
 }
