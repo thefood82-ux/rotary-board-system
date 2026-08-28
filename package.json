@@ -1,0 +1,19 @@
+{
+  "name": "rotary-board-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "새송탄로타리클럽 이사회 성원보고·전자결재 시스템",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "next": "^16.3.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1"
+  }
+}
