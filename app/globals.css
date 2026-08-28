@@ -60,3 +60,24 @@ td {
   color: #666;
   font-size: 0.9rem;
 }
+
+.stack-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 360px;
+  margin: 1rem 0;
+}
+
+.stack-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.stack-form input,
+.stack-form select {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
