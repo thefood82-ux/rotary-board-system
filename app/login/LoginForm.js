@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+import PasswordField from "@/components/PasswordField";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -44,8 +45,7 @@ export default function LoginForm() {
       </label>
       <label>
         비밀번호
-        <input
-          type="password"
+        <PasswordField
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"

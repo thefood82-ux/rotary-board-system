@@ -12,6 +12,12 @@ const STATUS_LABEL = {
   rejected: "가입 신청이 반려되었습니다. 관리자에게 문의해주세요.",
 };
 
+const STATUS_BADGE_TEXT = {
+  pending: "승인 대기",
+  approved: "승인 완료",
+  rejected: "반려됨",
+};
+
 export default async function StatusPage() {
   const supabase = await createSupabaseSessionClient();
   const {
@@ -22,23 +28,31 @@ export default async function StatusPage() {
   const profile = await getProfileByUserId(user.id);
 
   return (
-    <main className="page">
-      <p>
-        <Link href="/">← 홈으로</Link>
-      </p>
-      <h1>내 계정 상태</h1>
-      <p>이메일: {user.email}</p>
+    <main>
+      <Link href="/" className="back-link">
+        ← 홈으로
+      </Link>
+      <h1 className="page-title">내 계정 상태</h1>
 
-      {!profile ? (
-        <p className="banner error">계정 정보를 찾을 수 없습니다. 관리자에게 문의해주세요.</p>
-      ) : (
-        <>
-          <p>
-            선택한 명부 인물: {profile.board_members?.name} ({profile.board_members?.position})
-          </p>
-          <p className="banner">{STATUS_LABEL[profile.approval_status] || profile.approval_status}</p>
-        </>
-      )}
+      <section className="card">
+        <p className="meta-line">이메일: {user.email}</p>
+
+        {!profile ? (
+          <p className="banner error">계정 정보를 찾을 수 없습니다. 관리자에게 문의해주세요.</p>
+        ) : (
+          <>
+            <p>
+              선택한 명부 인물: {profile.board_members?.name} ({profile.board_members?.position})
+            </p>
+            <p>
+              <span className={`badge badge-${profile.approval_status}`}>
+                {STATUS_BADGE_TEXT[profile.approval_status] || profile.approval_status}
+              </span>
+            </p>
+            <p className="banner">{STATUS_LABEL[profile.approval_status] || profile.approval_status}</p>
+          </>
+        )}
+      </section>
 
       <LogoutButton />
     </main>

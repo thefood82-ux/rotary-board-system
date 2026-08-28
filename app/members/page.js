@@ -11,17 +11,17 @@ export default async function MembersPage({ searchParams }) {
   const members = currentTerm ? await getBoardMembers(currentTerm.id) : [];
 
   return (
-    <main className="page">
-      <p>
-        <Link href="/">← 홈으로</Link>
-      </p>
-      <h1>명부 관리</h1>
+    <main>
+      <Link href="/" className="back-link">
+        ← 홈으로
+      </Link>
+      <h1 className="page-title">명부 관리</h1>
 
       {sp.result && <p className="banner success">{sp.result}</p>}
       {sp.error && <p className="banner error">{sp.error}</p>}
 
       {!currentTerm ? (
-        <section>
+        <section className="card">
           <p>아직 활성 회기(term)가 없습니다. 먼저 현재 회기를 만들어주세요 (예: "26-27").</p>
           <p className="hint">
             아래 폼 대신 Supabase 대시보드의 Table Editor에서 <code>terms</code> 테이블에 직접
@@ -34,7 +34,7 @@ export default async function MembersPage({ searchParams }) {
         </section>
       ) : (
         <>
-          <p>
+          <p className="meta-line">
             현재 회기: <strong>{currentTerm.name}</strong>
           </p>
           <BoardMemberTable

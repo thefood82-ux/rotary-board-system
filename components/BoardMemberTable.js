@@ -12,19 +12,21 @@ export default function BoardMemberTable({ termId, members, addAction, updateAct
   }
 
   return (
-    <section>
+    <section className="card">
       <h2>이사 추가</h2>
       <form action={addAction} className="inline-form">
         <input type="hidden" name="term_id" value={termId} />
         <input name="name" placeholder="이름" required />
         <input name="position" placeholder="직책" required />
         <input name="display_order" type="number" placeholder="정렬순서" defaultValue={members.length} />
-        <button type="submit">추가</button>
+        <button type="submit" className="btn-gold">
+          추가
+        </button>
       </form>
 
       <h2>재적 이사 명부 ({members.length}명)</h2>
       {members.length === 0 ? (
-        <p>등록된 이사가 없습니다.</p>
+        <p className="empty-state">등록된 이사가 없습니다.</p>
       ) : (
         <table>
           <thead>
@@ -46,7 +48,7 @@ export default function BoardMemberTable({ termId, members, addAction, updateAct
                       <input name="name" defaultValue={m.name} required />
                       <input name="position" defaultValue={m.position} required />
                       <button type="submit">저장</button>
-                      <button type="button" onClick={() => setEditingId(null)}>
+                      <button type="button" className="btn-secondary" onClick={() => setEditingId(null)}>
                         취소
                       </button>
                     </form>
@@ -58,12 +60,12 @@ export default function BoardMemberTable({ termId, members, addAction, updateAct
                   <td>{m.name}</td>
                   <td>{m.position}</td>
                   <td className="row-actions">
-                    <button type="button" onClick={() => setEditingId(m.id)}>
+                    <button type="button" className="btn-secondary" onClick={() => setEditingId(m.id)}>
                       수정
                     </button>
                     <form action={deleteAction} style={{ display: "inline" }}>
                       <input type="hidden" name="id" value={m.id} />
-                      <button type="submit" onClick={(e) => handleDeleteClick(e, m)}>
+                      <button type="submit" className="btn-danger" onClick={(e) => handleDeleteClick(e, m)}>
                         삭제
                       </button>
                     </form>
