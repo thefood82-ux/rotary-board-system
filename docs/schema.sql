@@ -83,3 +83,14 @@ create index idx_meetings_term_id on meetings(term_id);
 create index idx_attendance_responses_meeting_id on attendance_responses(meeting_id);
 create index idx_profiles_board_member_id on profiles(board_member_id);
 create index idx_meeting_minutes_meeting_id on meeting_minutes(meeting_id);
+
+-- 안전장치 1: 이사 1명당 "승인된" 계정은 1개만 허용
+-- (가입 신청 중인 pending 상태는 여러 건 있어도 되지만, approved는 1건만)
+create unique index idx_profiles_board_member_id_approved
+  on profiles(board_member_id)
+  where approval_status = 'approved' and board_member_id is not null;
+
+-- 안전장치 2: 회기(term) 중 "현재 활성"은 항상 1개만 허용
+create unique index idx_terms_only_one_current
+  on terms(is_current)
+  where is_current = true;
