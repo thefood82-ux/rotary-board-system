@@ -1,0 +1,62 @@
+body {
+  font-family: -apple-system, "Malgun Gothic", sans-serif;
+  margin: 0;
+  padding: 2rem;
+  color: #1a1a1a;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.inline-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.75rem 0;
+  flex-wrap: wrap;
+}
+
+.inline-form input {
+  padding: 0.4rem;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.banner {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+.banner.success {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.banner.error {
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.hint {
+  color: #666;
+  font-size: 0.9rem;
+}
