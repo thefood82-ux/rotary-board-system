@@ -47,19 +47,17 @@ async function saveContent(meetingId, content) {
   return created.id;
 }
 
-export async function saveMinutesAction(formData) {
-  const meetingId = formData.get("meeting_id");
-  const content = (formData.get("content") || "").toString();
-
+// 타이핑을 멈추면 클라이언트(MinutesEditor)가 디바운스 후 이 함수를 직접 호출한다.
+// form 제출이 아니라 일반 함수 호출이라 redirect 대신 결과 객체를 반환한다.
+export async function autosaveMinutesContent(meetingId, content) {
   try {
     await saveContent(meetingId, content);
   } catch (err) {
-    redirect(`/admin/meetings/${meetingId}/minutes?error=${encodeURIComponent(err.message)}`);
-    return;
+    return { ok: false, error: err.message };
   }
 
-  revalidatePath(`/admin/meetings/${meetingId}/minutes`);
-  redirect(`/admin/meetings/${meetingId}/minutes?result=${encodeURIComponent("저장했습니다.")}`);
+  revalidatePath(`/admin/meetings/${meetingId}/status`);
+  return { ok: true };
 }
 
 export async function finalizeMinutesAction(formData) {

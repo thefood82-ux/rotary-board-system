@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
 import { buildAttendanceSummary, buildDraftText } from "@/lib/minutes";
-import { saveMinutesAction, finalizeMinutesAction, revertMinutesToDraftAction } from "./actions";
+import MinutesEditor from "@/components/MinutesEditor";
+import { autosaveMinutesContent, finalizeMinutesAction, revertMinutesToDraftAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -50,9 +51,9 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
       {sp.result && <p className="banner success">{sp.result}</p>}
       {sp.error && <p className="banner error">{sp.error}</p>}
 
-      {!existing && (
+      {!existing && !isFinal && (
         <p className="hint">
-          아직 저장된 회의록이 없어 현재 성원현황을 기준으로 초안을 자동 생성했습니다. 자유롭게 수정한 뒤 저장해주세요.
+          아직 저장된 회의록이 없어 현재 성원현황을 기준으로 초안을 자동 생성했습니다. 자유롭게 수정하면 잠시 후 자동 저장됩니다.
         </p>
       )}
 
@@ -69,18 +70,12 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
             </form>
           </>
         ) : (
-          <form>
-            <input type="hidden" name="meeting_id" value={meeting.id} />
-            <textarea name="content" className="minutes-textarea" defaultValue={content} rows={20} />
-            <div className="row-actions" style={{ marginTop: "0.9rem" }}>
-              <button type="submit" formAction={saveMinutesAction} className="btn-secondary">
-                저장
-              </button>
-              <button type="submit" formAction={finalizeMinutesAction} className="btn-gold">
-                확정
-              </button>
-            </div>
-          </form>
+          <MinutesEditor
+            meetingId={meeting.id}
+            initialContent={content}
+            autosaveAction={autosaveMinutesContent}
+            finalizeAction={finalizeMinutesAction}
+          />
         )}
       </section>
     </main>

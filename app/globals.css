@@ -471,6 +471,30 @@ a.btn-gold {
   gap: 0.6rem;
 }
 
+.autosave-status {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.autosave-status.autosave-saved {
+  color: var(--success-text);
+}
+
+.autosave-status.autosave-pending {
+  color: var(--text-muted);
+}
+
+.autosave-status.autosave-saving {
+  color: var(--rotary-blue);
+}
+
+.autosave-status.autosave-error {
+  color: var(--error-text);
+}
+
 .minutes-textarea {
   width: 100%;
   min-height: 420px;
