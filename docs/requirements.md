@@ -124,7 +124,19 @@
 
 > UNIQUE(meeting_id, board_member_id) — 이사 1명당 회의 1건에 응답 1개.
 
-### 4-6. 정족수 계산 (별도 테이블 없이 조회 시 계산)
+### 4-6. `meeting_minutes` (회의록)
+| 컬럼 | 타입 | 설명 |
+|---|---|---|
+| id | uuid, PK | |
+| meeting_id | uuid, FK → meetings, UNIQUE | 회의 1건당 회의록 1개 |
+| content | text | 회의록 본문 |
+| attendance_summary | jsonb | 작성 시점 성원현황 스냅샷(참석/위임/불참 명단, 정족수 충족 여부) |
+| status | text | `draft`(작성 중) \| `final`(확정) |
+| created_by | uuid, FK → profiles | |
+| created_at | timestamptz | |
+| updated_at | timestamptz | |
+
+### 4-7. 정족수 계산 (별도 테이블 없이 조회 시 계산)
 ```
 분모 = board_members 중 해당 term의 재적 인원수 (기본 22)
 분자 = attendance_responses 중 status IN ('attend','delegate') 개수
@@ -166,7 +178,7 @@
 
 ④ **회의 마감 처리**: **관리자 수동 마감**. 자동 마감 시각 설정 없이, 관리자가 `meetings.status`를 `open → closed`로 직접 전환한다. `closed` 상태에서는 이사의 응답 수정이 잠긴다.
 
-⑤ **회의록 연동 범위**: **텍스트 생성만 (MVP)**. 시스템 내 회의록 편집기는 만들지 않고, 성원현황(참석/위임/불참 명단, 정족수 충족 여부)을 워드/한글에 붙여넣기 좋은 텍스트로 생성하는 기능만 제공한다.
+⑤ **회의록 연동 범위**: **시스템 내 저장·편집 기능 포함**. 회의록을 워드/한글에 붙여넣는 텍스트로만 생성하는 것이 아니라, 시스템 안에서 회의록 내용을 직접 작성·저장·수정할 수 있어야 한다. 작성 시점의 성원현황(참석/위임/불참 명단, 정족수 충족 여부)을 스냅샷으로 함께 저장한다 (`meeting_minutes` 테이블, 4-6 참고).
 
 ⑥ **소집 알림**: **MVP에서 제외**. 소집 등록 시 자동 이메일 발송 기능은 만들지 않는다. 이사들은 시스템에 직접 로그인해서 확인한다. (이메일 발송 인프라 구축은 추후 별도 논의.)
 

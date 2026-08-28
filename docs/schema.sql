@@ -65,8 +65,21 @@ alter table attendance_responses
     or (status <> 'delegate' and delegate_to_id is null)
   );
 
+-- 6. meeting_minutes (회의록) — 결정⑤: 시스템 내 저장·편집 기능 포함 (텍스트 생성만이 아님)
+create table meeting_minutes (
+  id uuid primary key default gen_random_uuid(),
+  meeting_id uuid not null unique references meetings(id),
+  content text,
+  attendance_summary jsonb,           -- 작성 시점 성원현황 스냅샷(참석/위임/불참 명단, 정족수 충족 여부)
+  status text not null default 'draft' check (status in ('draft', 'final')),
+  created_by uuid not null references profiles(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 -- 조회 성능용 인덱스
 create index idx_board_members_term_id on board_members(term_id);
 create index idx_meetings_term_id on meetings(term_id);
 create index idx_attendance_responses_meeting_id on attendance_responses(meeting_id);
 create index idx_profiles_board_member_id on profiles(board_member_id);
+create index idx_meeting_minutes_meeting_id on meeting_minutes(meeting_id);
