@@ -471,6 +471,30 @@ a.btn-gold {
   gap: 0.6rem;
 }
 
+.minutes-textarea {
+  width: 100%;
+  min-height: 420px;
+  padding: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  color: var(--text);
+}
+
+.minutes-textarea:focus {
+  outline: none;
+  border-color: var(--rotary-blue);
+  box-shadow: 0 0 0 3px var(--rotary-blue-light);
+}
+
+.minutes-textarea[readonly] {
+  background: #fafbfd;
+  color: var(--text-muted);
+}
+
 .meeting-list-item {
   display: flex;
   justify-content: space-between;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMeetingById, getBoardMembers, getAttendanceResponses } from "@/lib/data";
+import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
 import { calculateQuorum } from "@/lib/quorum";
 import { closeMeetingAction } from "./actions";
 
@@ -24,7 +24,11 @@ export default async function MeetingStatusPage({ params, searchParams }) {
     );
   }
 
-  const [roster, responses] = await Promise.all([getBoardMembers(meeting.term_id), getAttendanceResponses(id)]);
+  const [roster, responses, minutes] = await Promise.all([
+    getBoardMembers(meeting.term_id),
+    getAttendanceResponses(id),
+    getMeetingMinutes(id),
+  ]);
 
   const memberById = new Map(roster.map((m) => [m.id, m]));
   const responseByMemberId = new Map(responses.map((r) => [r.board_member_id, r]));
@@ -71,6 +75,20 @@ export default async function MeetingStatusPage({ params, searchParams }) {
           ? `재적 ${total}명 중 ${attendCount}명 참석(위임 포함)으로 정족수를 충족하여 개의를 선언합니다.`
           : `정족수 미충족: 재적 ${total}명 중 ${attendCount}명 참석(위임 포함). 과반수 ${majorityThreshold}명 필요.`}
       </div>
+
+      <section className="card">
+        <h2>회의록</h2>
+        <p className="meta-line">
+          {!minutes
+            ? "아직 작성되지 않았습니다."
+            : minutes.status === "final"
+              ? "확정됨"
+              : "초안 저장됨"}
+        </p>
+        <Link href={`/admin/meetings/${meeting.id}/minutes`} className="btn btn-secondary">
+          회의록 작성
+        </Link>
+      </section>
 
       <section className="card">
         <h2>회의 마감</h2>
