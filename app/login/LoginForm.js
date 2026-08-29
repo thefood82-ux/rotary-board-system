@@ -27,7 +27,7 @@ export default function LoginForm() {
       return;
     }
 
-    router.push("/status");
+    router.push("/");
     router.refresh();
   }
 

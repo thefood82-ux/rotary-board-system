@@ -51,7 +51,7 @@ export async function proxy(request) {
 
   if (user && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
     const url = request.nextUrl.clone();
-    url.pathname = "/status";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

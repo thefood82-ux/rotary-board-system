@@ -106,6 +106,50 @@ a {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.site-subnav-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0.45rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.site-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  font-size: 0.78rem;
+}
+
+.site-subnav a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-subnav a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.site-subnav-logout {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0;
+}
+
+.site-subnav-logout:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
 /* ---------- Page shell ---------- */
 
 .shell {

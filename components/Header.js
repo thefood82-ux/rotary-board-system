@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { getSessionUser } from "@/lib/dal";
+import { getSessionUser, getSessionProfile } from "@/lib/dal";
 import { getCurrentTerm, getCurrentPresidentName } from "@/lib/data";
+import LogoutButton from "@/components/LogoutButton";
 
 export default async function Header() {
   const [user, currentTerm] = await Promise.all([getSessionUser(), getCurrentTerm()]);
   const presidentName = currentTerm ? await getCurrentPresidentName(currentTerm.id) : null;
+  const profile = user ? await getSessionProfile(user.id) : null;
+  const isAdmin = profile?.role === "admin";
 
   return (
     <header className="site-header">
@@ -28,6 +31,23 @@ export default async function Header() {
           </nav>
         )}
       </div>
+
+      {user && (
+        <div className="site-subnav-inner">
+          <nav className="site-subnav">
+            <Link href="/status">내 계정 상태</Link>
+            {isAdmin && (
+              <>
+                <Link href="/members">명부 관리</Link>
+                <Link href="/admin/approvals">가입 승인 관리</Link>
+                <Link href="/admin/meetings">이사회 소집 등록</Link>
+                <Link href="/admin/announcements">공지사항 관리</Link>
+              </>
+            )}
+          </nav>
+          <LogoutButton className="site-subnav-logout" />
+        </div>
+      )}
     </header>
   );
 }

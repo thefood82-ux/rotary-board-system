@@ -41,7 +41,6 @@ export default async function HomePage({ searchParams }) {
   const user = await getSessionUser();
   const profile = user ? await getSessionProfile(user.id) : null;
   const isApproved = profile?.approval_status === "approved";
-  const isAdmin = profile?.role === "admin";
   const isBoardMember = Boolean(profile?.board_member_id);
 
   const currentTerm = await getCurrentTerm();
@@ -76,27 +75,13 @@ export default async function HomePage({ searchParams }) {
         </div>
       )}
 
-      <nav className="home-links">
-        {user && (
-          <>
-            <Link href="/status">내 계정 상태</Link>
-            {openMeetings.length > 0 && (
-              <Link href={openMeetings.length === 1 ? `/meetings/${openMeetings[0].id}/respond` : "/status"}>
-                내 응답 (진행 중인 회의 {openMeetings.length}건)
-              </Link>
-            )}
-          </>
-        )}
-
-        {isAdmin && (
-          <>
-            <Link href="/members">명부 관리</Link>
-            <Link href="/admin/approvals">가입 승인 관리</Link>
-            <Link href="/admin/meetings">이사회 소집 등록</Link>
-            <Link href="/admin/announcements">공지사항 관리</Link>
-          </>
-        )}
-      </nav>
+      {openMeetings.length > 0 && (
+        <nav className="home-links">
+          <Link href={openMeetings.length === 1 ? `/meetings/${openMeetings[0].id}/respond` : "/status"}>
+            내 응답 (진행 중인 회의 {openMeetings.length}건)
+          </Link>
+        </nav>
+      )}
 
       <section className="card">
         <h2>이사회 소집 목록</h2>
