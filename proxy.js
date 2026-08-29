@@ -37,7 +37,11 @@ export async function proxy(request) {
 
   const { pathname } = request.nextUrl;
   // 로그인 없이 접근 가능한 화면: 홈(비로그인 시 로그인/가입 링크만 보여줌), 로그인, 회원가입.
-  const isPublicPath = pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/signup");
+  // 확장자가 있는 경로(/rotarylogo.png 등 public/ 정적 파일)도 항상 통과시킨다 —
+  // 안 그러면 비로그인 방문자에게 헤더 로고 같은 정적 자산이 로그인 페이지로 리다이렉트돼버린다.
+  const isStaticAsset = /\.[^/]+$/.test(pathname);
+  const isPublicPath =
+    isStaticAsset || pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/signup");
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();

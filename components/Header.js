@@ -5,7 +5,7 @@ export default function Header() {
     <header className="site-header">
       <div className="site-header-inner">
         <Link href="/" className="brand">
-          <span className="brand-mark">R</span>
+          <img src="/rotarylogo.png" alt="로타리 로고" className="brand-mark" />
           <span className="brand-text">
             새송탄로타리클럽
             <strong>26-27년도 이사회</strong>

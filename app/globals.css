@@ -55,16 +55,13 @@ a {
 }
 
 .brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 2.1rem;
   height: 2.1rem;
   border-radius: 50%;
-  background: var(--rotary-gold);
-  color: var(--rotary-blue-dark);
-  font-weight: 800;
-  font-size: 1rem;
+  background: var(--rotary-blue-dark);
+  object-fit: cover;
+  object-position: center;
   flex-shrink: 0;
 }
 
