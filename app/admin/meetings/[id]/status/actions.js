@@ -8,6 +8,8 @@ import { closeMeeting, upsertAttendanceResponse } from "@/lib/mutations";
 // Server Action은 URL을 알면 누구나 직접 POST할 수 있으므로, UI에서 버튼을 숨겼더라도
 // 반드시 서버에서 다시 한번 관리자 권한을 확인한다.
 
+// 회의록 화면(확정된 회의록 보기)에서 호출한다 — 회의록이 확정된 뒤에만 마감할 수 있도록
+// 그 화면에서만 버튼을 보여준다(요구사항: 회의 결과물을 본 뒤 이의 없으면 마감).
 export async function closeMeetingAction(formData) {
   const { user } = await requireAdmin();
   const id = formData.get("id");
@@ -19,13 +21,14 @@ export async function closeMeetingAction(formData) {
   try {
     await closeMeeting({ id, closedBy: user.id });
   } catch (err) {
-    redirect(`/admin/meetings/${id}/status?error=${encodeURIComponent(err.message)}`);
+    redirect(`/admin/meetings/${id}/minutes?error=${encodeURIComponent(err.message)}`);
     return;
   }
 
+  revalidatePath(`/admin/meetings/${id}/minutes`);
   revalidatePath(`/admin/meetings/${id}/status`);
   revalidatePath("/admin/meetings");
-  redirect(`/admin/meetings/${id}/status?result=${encodeURIComponent("회의를 마감했습니다.")}`);
+  redirect(`/admin/meetings/${id}/minutes?result=${encodeURIComponent("회의를 마감했습니다.")}`);
 }
 
 // 전화 등으로 접수한 응답을 관리자가 본인 대신 입력/수정할 때 쓴다 — 미응답 포함 누구든 대상.

@@ -13,6 +13,7 @@ import { formatMeetingDateShort, formatMeetingDateLong } from "@/lib/dates";
 import MinutesEditor from "@/components/MinutesEditor";
 import MinutesDocumentView from "@/components/MinutesDocumentView";
 import { autosaveMinutesContent, finalizeMinutesAction, revertMinutesToDraftAction } from "./actions";
+import { closeMeetingAction } from "../status/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -74,7 +75,7 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
   return (
     <main>
       <Link href={`/admin/meetings/${meeting.id}/status`} className="back-link">
-        ← 성원현황으로
+        ← 성원현황 및 회의진행으로
       </Link>
       <h1 className="page-title">회의록</h1>
 
@@ -95,13 +96,37 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
       {isFinal ? (
         <>
           <MinutesDocumentView meeting={meeting} content={existing.content} seq={seq} />
-          <form action={revertMinutesToDraftAction}>
-            <input type="hidden" name="meeting_id" value={meeting.id} />
-            <input type="hidden" name="id" value={existing.id} />
-            <button type="submit" className="btn-secondary">
-              초안으로 되돌리기 (수정하려면 먼저 눌러주세요)
-            </button>
-          </form>
+
+          <div style={{ marginTop: "0.9rem" }}>
+            {meeting.status === "closed" && (
+              <p className="badge badge-closed">
+                마감됨{meeting.closed_at ? ` (${new Date(meeting.closed_at).toLocaleString("ko-KR")})` : ""}
+              </p>
+            )}
+
+            {meeting.status !== "closed" && <p className="hint">이의가 없으면 회의를 마감하세요.</p>}
+
+            {/* 회의가 이미 마감됐어도 회의록 내용(성원 체크 오류 등)은 고칠 수 있어야 하므로
+                "초안으로 되돌리기"는 마감 여부와 무관하게 항상 보여준다. "회의 마감하기"만
+                아직 마감 전일 때 보여준다(이미 마감된 회의를 다시 마감할 필요는 없음). */}
+            <div className="row-actions">
+              {meeting.status !== "closed" && (
+                <form action={closeMeetingAction}>
+                  <input type="hidden" name="id" value={meeting.id} />
+                  <button type="submit" className="btn-danger">
+                    회의 마감하기
+                  </button>
+                </form>
+              )}
+              <form action={revertMinutesToDraftAction}>
+                <input type="hidden" name="meeting_id" value={meeting.id} />
+                <input type="hidden" name="id" value={existing.id} />
+                <button type="submit" className="btn-secondary">
+                  초안으로 되돌리기 (수정하려면 먼저 눌러주세요)
+                </button>
+              </form>
+            </div>
+          </div>
         </>
       ) : (
         <MinutesEditor

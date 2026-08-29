@@ -35,13 +35,25 @@ export default async function Header() {
       {user && (
         <div className="site-subnav-inner">
           <nav className="site-subnav">
-            <Link href="/status">내 계정 상태</Link>
             {isAdmin && (
               <>
-                <Link href="/members">명부 관리</Link>
-                <Link href="/admin/approvals">가입 승인 관리</Link>
                 <Link href="/admin/meetings">이사회 소집 등록</Link>
+                <Link href="/admin/attendance">출석명단</Link>
                 <Link href="/admin/announcements">공지사항 관리</Link>
+              </>
+            )}
+            <span className="site-subnav-divider" aria-hidden="true" />
+            <Link href="/status" className="site-subnav-secondary">
+              내 계정 상태
+            </Link>
+            {isAdmin && (
+              <>
+                <Link href="/members" className="site-subnav-secondary">
+                  명부 관리
+                </Link>
+                <Link href="/admin/approvals" className="site-subnav-secondary">
+                  가입 승인 관리
+                </Link>
               </>
             )}
           </nav>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import MinutesAttendanceSection from "@/components/MinutesAttendanceSection";
 
 const DEBOUNCE_MS = 1500;
 
@@ -94,10 +95,7 @@ export default function MinutesEditor({
           <h2 className="minutes-doc-section-title">성원보고</h2>
           <div className="minutes-doc-quorum-box minutes-doc-readonly-value">{quorumReportText}</div>
 
-          <h2 className="minutes-doc-section-title">출석 및 성원 상세 현황</h2>
-          <div className="minutes-doc-editable-box minutes-doc-readonly-value" style={{ whiteSpace: "pre-wrap" }}>
-            {attendanceDetailText}
-          </div>
+          <MinutesAttendanceSection attendanceDetailText={attendanceDetailText} />
           <p className="hint">성원현황 페이지의 응답 입력/수정에 따라 자동으로 반영됩니다.</p>
 
           <h2 className="minutes-doc-section-title">심의 및 의결 사항</h2>
@@ -105,6 +103,8 @@ export default function MinutesEditor({
             <textarea rows={10} value={resolutionText} onChange={field("resolutionText", setResolutionText)} />
           </div>
           <p className="hint">"1) ...", "2) ..." 형식으로 번호를 붙이면 회의록 보기 화면에서 번호 목록으로 정리되어 보입니다.</p>
+
+          <p className="minutes-doc-closing">이 상</p>
         </div>
       </div>
 

@@ -35,6 +35,10 @@ export default function MeetingsTable({ meetings, updateAction, deleteAction }) 
                     안건
                     <textarea name="agenda" className="minutes-textarea" rows={4} defaultValue={m.agenda || ""} />
                   </label>
+                  <p className="hint-warning">
+                    반드시 "1) 안건 하나", "2) 안건 둘"처럼 줄마다 번호를 붙여 입력해주세요. 형식이 다르면 안건별로
+                    나뉘어 보이지 않습니다.
+                  </p>
                   <div className="row-actions">
                     <button type="submit">저장</button>
                     <button type="button" className="btn-secondary" onClick={() => setEditingId(null)}>

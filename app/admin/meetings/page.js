@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
-import { getCurrentTerm, getMeetings } from "@/lib/data";
+import { getCurrentTerm, getMeetings, getBoardMembers } from "@/lib/data";
 import { formatTermYearLabel } from "@/lib/dates";
 import MeetingsTable from "@/components/MeetingsTable";
 import CreateMeetingSubmitButton from "@/components/CreateMeetingSubmitButton";
@@ -13,6 +13,13 @@ export default async function MeetingsAdminPage({ searchParams }) {
   const sp = (await searchParams) || {};
   const currentTerm = await getCurrentTerm();
   const meetings = currentTerm ? await getMeetings(currentTerm.id) : [];
+  const roster = currentTerm ? await getBoardMembers(currentTerm.id) : [];
+  const officerByPosition = new Map(roster.map((m) => [m.position, m.name]));
+  const officers = {
+    president: officerByPosition.get("회장"),
+    secretary: officerByPosition.get("총무"),
+    treasurer: officerByPosition.get("재무"),
+  };
 
   return (
     <main>
@@ -40,6 +47,21 @@ export default async function MeetingsAdminPage({ searchParams }) {
             <div className="minutes-doc-body">
               <p className="meta-line">
                 현재 회기: <strong>{formatTermYearLabel(currentTerm.name)}</strong>
+                {officers.president && (
+                  <>
+                    {" · "}회장 <span className="term-officer-name">{officers.president}</span>
+                  </>
+                )}
+                {officers.secretary && (
+                  <>
+                    {" · "}총무 <span className="term-officer-name">{officers.secretary}</span>
+                  </>
+                )}
+                {officers.treasurer && (
+                  <>
+                    {" · "}재무 <span className="term-officer-name">{officers.treasurer}</span>
+                  </>
+                )}
               </p>
               <form action={createMeetingAction} className="stack-form stack-form-wide">
                 <label>
@@ -52,6 +74,10 @@ export default async function MeetingsAdminPage({ searchParams }) {
                     <textarea name="agenda" rows={5} placeholder="예: 1) 안건 하나&#10;2) 안건 둘" />
                   </div>
                 </label>
+                <p className="hint-warning">
+                  반드시 "1) 안건 하나", "2) 안건 둘"처럼 줄마다 번호를 붙여 입력해주세요. 형식이 다르면 안건별로
+                  나뉘어 보이지 않습니다.
+                </p>
                 <CreateMeetingSubmitButton />
               </form>
             </div>
