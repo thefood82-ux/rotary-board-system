@@ -2,29 +2,20 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createSupabaseSessionClient } from "@/lib/supabase-session";
+import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm } from "@/lib/data";
 import { createMeeting } from "@/lib/mutations";
 
-// 로그인/관리자 권한 검사가 아직 없어 누구나 호출할 수 있는 상태다.
-// 인증이 추가되면 이 액션 시작 부분에 requireAdmin() 호출을 넣어야 한다.
-// (created_by는 NOT NULL FK라 로그인 세션은 필요 — 이는 권한 검사가 아니라 데이터 요구사항)
+// Server Action은 URL을 알면 누구나 직접 POST할 수 있으므로, UI에서 버튼을 숨겼더라도
+// 반드시 서버에서 다시 한번 관리자 권한을 확인한다.
 
 export async function createMeetingAction(formData) {
+  const { user } = await requireAdmin();
   const meetingDate = (formData.get("meeting_date") || "").toString();
   const agenda = (formData.get("agenda") || "").toString().trim();
 
   if (!meetingDate) {
     redirect(`/admin/meetings?error=${encodeURIComponent("날짜를 입력해주세요.")}`);
-    return;
-  }
-
-  const supabase = await createSupabaseSessionClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect(`/admin/meetings?error=${encodeURIComponent("회의를 등록하려면 먼저 로그인해주세요.")}`);
     return;
   }
 

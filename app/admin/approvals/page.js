@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/dal";
 import { getPendingProfiles } from "@/lib/data";
 import { approveProfileAction, rejectProfileAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function ApprovalsPage({ searchParams }) {
+  await requireAdmin();
   const sp = (await searchParams) || {};
   const pending = await getPendingProfiles();
 

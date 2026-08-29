@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/dal";
 import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
 import { calculateQuorum } from "@/lib/quorum";
 import { closeMeetingAction } from "./actions";
@@ -8,6 +9,7 @@ export const dynamic = "force-dynamic";
 const STATUS_LABEL = { attend: "참석", delegate: "위임", absent: "불참" };
 
 export default async function MeetingStatusPage({ params, searchParams }) {
+  await requireAdmin();
   const { id } = await params;
   const sp = (await searchParams) || {};
 

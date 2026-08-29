@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm, getBoardMembers } from "@/lib/data";
 import BoardMemberTable from "@/components/BoardMemberTable";
 import { createCurrentTermAction, addBoardMemberAction, updateBoardMemberAction, deleteBoardMemberAction } from "./actions";
@@ -6,6 +7,7 @@ import { createCurrentTermAction, addBoardMemberAction, updateBoardMemberAction,
 export const dynamic = "force-dynamic";
 
 export default async function MembersPage({ searchParams }) {
+  await requireAdmin();
   const sp = (await searchParams) || {};
   const currentTerm = await getCurrentTerm();
   const members = currentTerm ? await getBoardMembers(currentTerm.id) : [];

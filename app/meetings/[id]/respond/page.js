@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createSupabaseSessionClient } from "@/lib/supabase-session";
-import { getProfileByUserId, getMeetingById, getBoardMembers, getMyAttendanceResponse } from "@/lib/data";
+import { requireApprovedMember } from "@/lib/dal";
+import { getMeetingById, getBoardMembers, getMyAttendanceResponse } from "@/lib/data";
 import AttendanceForm from "@/components/AttendanceForm";
 import { respondAction } from "./actions";
 
@@ -10,14 +9,9 @@ export const dynamic = "force-dynamic";
 const STATUS_LABEL = { attend: "참석", delegate: "위임", absent: "불참" };
 
 export default async function RespondPage({ params, searchParams }) {
+  const { profile } = await requireApprovedMember();
   const { id } = await params;
   const sp = (await searchParams) || {};
-
-  const supabase = await createSupabaseSessionClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
 
   const meeting = await getMeetingById(id);
   if (!meeting) {
@@ -31,8 +25,6 @@ export default async function RespondPage({ params, searchParams }) {
       </main>
     );
   }
-
-  const profile = await getProfileByUserId(user.id);
 
   const [members, myResponse] = await Promise.all([
     getBoardMembers(meeting.term_id),
@@ -57,11 +49,6 @@ export default async function RespondPage({ params, searchParams }) {
       <section className="card">
         {!profile?.board_member_id ? (
           <p className="empty-state">계정에 매칭된 명부 인물이 없습니다. 관리자에게 문의해주세요.</p>
-        ) : profile.approval_status !== "approved" ? (
-          <p className="banner pending">
-            아직 관리자 승인 전이라 응답할 수 없습니다.{" "}
-            <Link href="/status">내 계정 상태 확인</Link>
-          </p>
         ) : meeting.status === "closed" ? (
           <>
             <p className="banner error">마감되어 수정할 수 없습니다.</p>

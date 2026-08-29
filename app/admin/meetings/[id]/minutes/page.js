@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/dal";
 import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
 import { buildAttendanceSummary, buildDraftText } from "@/lib/minutes";
 import MinutesEditor from "@/components/MinutesEditor";
@@ -7,6 +8,7 @@ import { autosaveMinutesContent, finalizeMinutesAction, revertMinutesToDraftActi
 export const dynamic = "force-dynamic";
 
 export default async function MeetingMinutesPage({ params, searchParams }) {
+  await requireAdmin();
   const { id } = await params;
   const sp = (await searchParams) || {};
 

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createSupabaseSessionClient } from "@/lib/supabase-session";
-import { getProfileByUserId, getCurrentTerm, getMeetings } from "@/lib/data";
+import { requireUser, getSessionProfile } from "@/lib/dal";
+import { getCurrentTerm, getMeetings } from "@/lib/data";
 import LogoutButton from "@/components/LogoutButton";
 
 export const dynamic = "force-dynamic";
@@ -18,14 +17,10 @@ const STATUS_BADGE_TEXT = {
   rejected: "반려됨",
 };
 
-export default async function StatusPage() {
-  const supabase = await createSupabaseSessionClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const profile = await getProfileByUserId(user.id);
+export default async function StatusPage({ searchParams }) {
+  const sp = (await searchParams) || {};
+  const user = await requireUser();
+  const profile = await getSessionProfile(user.id);
   const currentTerm = await getCurrentTerm();
   const meetings =
     profile?.approval_status === "approved" && currentTerm ? await getMeetings(currentTerm.id) : [];
@@ -36,6 +31,8 @@ export default async function StatusPage() {
         ← 홈으로
       </Link>
       <h1 className="page-title">내 계정 상태</h1>
+
+      {sp.error && <p className="banner error">{sp.error}</p>}
 
       <section className="card">
         <p className="meta-line">이메일: {user.email}</p>

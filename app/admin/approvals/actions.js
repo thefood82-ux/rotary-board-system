@@ -2,12 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/dal";
 import { approveProfile, rejectProfile } from "@/lib/mutations";
 
-// 로그인/관리자 권한 검사가 아직 없어 누구나 호출할 수 있는 상태다.
-// 인증이 추가되면 각 액션 시작 부분에 requireAdmin() 호출을 넣어야 한다.
+// Server Action은 URL을 알면 누구나 직접 POST할 수 있으므로, UI에서 버튼을 숨겼더라도
+// 반드시 서버에서 다시 한번 관리자 권한을 확인한다.
 
 export async function approveProfileAction(formData) {
+  const { user } = await requireAdmin();
   const id = formData.get("id");
   if (!id) {
     redirect(`/admin/approvals?error=${encodeURIComponent("잘못된 요청입니다.")}`);
@@ -15,7 +17,7 @@ export async function approveProfileAction(formData) {
   }
 
   try {
-    await approveProfile({ id });
+    await approveProfile({ id, approvedBy: user.id });
   } catch (err) {
     // profiles(board_member_id) partial unique index — 이미 승인된 이사를 또 승인하려 할 때
     const isDuplicate = /duplicate key|23505|idx_profiles_board_member_id_approved/.test(err.message || "");
@@ -31,6 +33,7 @@ export async function approveProfileAction(formData) {
 }
 
 export async function rejectProfileAction(formData) {
+  await requireAdmin();
   const id = formData.get("id");
   if (!id) {
     redirect(`/admin/approvals?error=${encodeURIComponent("잘못된 요청입니다.")}`);

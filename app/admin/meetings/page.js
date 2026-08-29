@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm, getMeetings } from "@/lib/data";
 import { createMeetingAction } from "./actions";
 
@@ -7,6 +8,7 @@ export const dynamic = "force-dynamic";
 const STATUS_BADGE_TEXT = { open: "진행중", closed: "마감됨" };
 
 export default async function MeetingsAdminPage({ searchParams }) {
+  await requireAdmin();
   const sp = (await searchParams) || {};
   const currentTerm = await getCurrentTerm();
   const meetings = currentTerm ? await getMeetings(currentTerm.id) : [];

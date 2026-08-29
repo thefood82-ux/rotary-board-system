@@ -2,18 +2,27 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createSupabaseSessionClient } from "@/lib/supabase-session";
+import { getSessionUser, getSessionProfile, requireAdmin } from "@/lib/dal";
 import { getMeetingMinutes, getMeetingById, getBoardMembers, getAttendanceResponses } from "@/lib/data";
 import { createMeetingMinutes, updateMeetingMinutesContent, setMeetingMinutesStatus } from "@/lib/mutations";
 import { buildAttendanceSummary } from "@/lib/minutes";
 
-// 로그인/관리자 권한 검사가 아직 없어 누구나 호출할 수 있는 상태다.
-// 인증이 추가되면 각 액션 시작 부분에 requireAdmin() 호출을 넣어야 한다.
-// (최초 저장 시 created_by는 NOT NULL FK라 로그인 세션이 필요 — 권한 검사와는 별개)
+// autosaveMinutesContent는 form 제출이 아니라 클라이언트가 직접 호출하는 함수라 redirect를
+// 쓸 수 없다(타이핑 중 화면이 튀는 걸 피하려고) — 그래서 여기서는 리다이렉트하는
+// requireAdmin() 대신, 실패 시 에러를 던지기만 하는 이 검사를 쓴다. 호출한 쪽에서
+// (finalize/revert는 redirect로, autosave는 { ok:false, error }로) 알아서 처리한다.
+async function requireAdminOrThrow() {
+  const user = await getSessionUser();
+  if (!user) throw new Error("회의록을 저장하려면 먼저 로그인해주세요.");
+  const profile = await getSessionProfile(user.id);
+  if (!profile || profile.role !== "admin") throw new Error("관리자 권한이 필요합니다.");
+  return user;
+}
 
 // 회의록 행이 없으면 새로 만들고(이때만 성원현황 스냅샷 계산), 있으면 content만 갱신한다.
 // 반환값: 저장된 meeting_minutes의 id.
 async function saveContent(meetingId, content) {
+  const user = await requireAdminOrThrow();
   const existing = await getMeetingMinutes(meetingId);
 
   if (existing) {
@@ -22,14 +31,6 @@ async function saveContent(meetingId, content) {
     }
     await updateMeetingMinutesContent({ id: existing.id, content });
     return existing.id;
-  }
-
-  const supabase = await createSupabaseSessionClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    throw new Error("회의록을 저장하려면 먼저 로그인해주세요.");
   }
 
   const meeting = await getMeetingById(meetingId);
@@ -77,6 +78,7 @@ export async function finalizeMinutesAction(formData) {
 }
 
 export async function revertMinutesToDraftAction(formData) {
+  await requireAdmin();
   const meetingId = formData.get("meeting_id");
   const id = formData.get("id");
 
