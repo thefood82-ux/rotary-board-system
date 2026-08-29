@@ -1,14 +1,22 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
-import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
-import { buildAttendanceSummary, buildDraftText } from "@/lib/minutes";
+import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes, getMeetings, getTermById } from "@/lib/data";
+import {
+  buildAttendanceSummary,
+  buildQuorumReportText,
+  buildAttendanceDetailText,
+  buildMeetingTitle,
+  computeMeetingSequence,
+  parseMinutesContent,
+} from "@/lib/minutes";
+import { formatMeetingDateShort, formatMeetingDateLong } from "@/lib/dates";
 import MinutesEditor from "@/components/MinutesEditor";
 import { autosaveMinutesContent, finalizeMinutesAction, revertMinutesToDraftAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function MeetingMinutesPage({ params, searchParams }) {
-  await requireAdmin();
+  const { profile } = await requireAdmin();
   const { id } = await params;
   const sp = (await searchParams) || {};
 
@@ -26,14 +34,38 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
   }
 
   const existing = await getMeetingMinutes(id);
+  const [roster, responses, meetingsInTerm, term] = await Promise.all([
+    getBoardMembers(meeting.term_id),
+    getAttendanceResponses(id),
+    getMeetings(meeting.term_id),
+    getTermById(meeting.term_id),
+  ]);
 
-  let content;
+  const meetingDateTimeText = formatMeetingDateLong(meeting.meeting_date);
+
+  let fields;
   if (existing) {
-    content = existing.content || "";
+    fields = parseMinutesContent(existing.content) || {
+      author: "",
+      meetingTitle: "",
+      quorumReportText: "",
+      attendanceDetailText: "",
+      resolutionText: "",
+    };
   } else {
-    const [roster, responses] = await Promise.all([getBoardMembers(meeting.term_id), getAttendanceResponses(id)]);
+    // 작성자 기본값: 로그인한 관리자 본인의 명부 직책+이름 (명부에 없는 사무장 계정이면 빈 값 - 직접 입력).
+    const authorDefault = profile.board_members ? `${profile.board_members.position} ${profile.board_members.name}` : "";
+    const seqByMeetingId = computeMeetingSequence(meetingsInTerm);
+    const seq = seqByMeetingId.get(meeting.id) ?? 1;
     const summary = buildAttendanceSummary(roster, responses);
-    content = buildDraftText(meeting, summary);
+
+    fields = {
+      author: authorDefault,
+      meetingTitle: buildMeetingTitle(term?.name, seq),
+      quorumReportText: buildQuorumReportText(summary),
+      attendanceDetailText: buildAttendanceDetailText(roster, responses),
+      resolutionText: "",
+    };
   }
 
   const isFinal = existing?.status === "final";
@@ -46,7 +78,7 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
       <h1 className="page-title">회의록</h1>
 
       <p className="meta-line">
-        {meeting.meeting_date} {meeting.agenda ? `· ${meeting.agenda}` : ""} ·{" "}
+        {formatMeetingDateShort(meeting.meeting_date)} {meeting.agenda ? `· ${meeting.agenda}` : ""} ·{" "}
         <span className={`badge badge-${isFinal ? "approved" : "pending"}`}>{isFinal ? "확정" : "초안"}</span>
       </p>
 
@@ -62,7 +94,32 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
       <section className="card">
         {isFinal ? (
           <>
-            <textarea className="minutes-textarea" defaultValue={content} readOnly rows={20} />
+            <div className="stack-form">
+              <label>
+                작성자
+                <input value={fields.author} readOnly />
+              </label>
+              <label>
+                회의명
+                <input value={fields.meetingTitle} readOnly />
+              </label>
+              <label>
+                일시
+                <input value={meetingDateTimeText} readOnly />
+              </label>
+              <label>
+                1. 성원보고
+                <textarea className="minutes-textarea" rows={4} defaultValue={fields.quorumReportText} readOnly />
+              </label>
+              <label>
+                2. 출석 및 성원 상세 현황
+                <textarea className="minutes-textarea" rows={10} defaultValue={fields.attendanceDetailText} readOnly />
+              </label>
+              <label>
+                3. 심의 및 의결 사항
+                <textarea className="minutes-textarea" rows={10} defaultValue={fields.resolutionText} readOnly />
+              </label>
+            </div>
             <form action={revertMinutesToDraftAction} style={{ marginTop: "0.9rem" }}>
               <input type="hidden" name="meeting_id" value={meeting.id} />
               <input type="hidden" name="id" value={existing.id} />
@@ -74,7 +131,12 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
         ) : (
           <MinutesEditor
             meetingId={meeting.id}
-            initialContent={content}
+            initialAuthor={fields.author}
+            initialMeetingTitle={fields.meetingTitle}
+            meetingDateTimeText={meetingDateTimeText}
+            initialQuorumReportText={fields.quorumReportText}
+            initialAttendanceDetailText={fields.attendanceDetailText}
+            initialResolutionText={fields.resolutionText}
             autosaveAction={autosaveMinutesContent}
             finalizeAction={finalizeMinutesAction}
           />
