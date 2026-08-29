@@ -99,3 +99,9 @@ create unique index idx_terms_only_one_current
 alter table meetings
   add column closed_by uuid references profiles(id),
   add column closed_at timestamptz;
+
+-- 2026-08-29: 회의 시작 시각까지 함께 저장 (date -> timestamptz).
+-- meeting_date만 있던 걸 시간까지 포함하도록 확장 — 별도 meeting_time 컬럼을 두지 않고
+-- 하나의 timestamptz로 합친다(실행 시점에 meetings 행이 0건이라 데이터 손실 없음).
+alter table meetings
+  alter column meeting_date type timestamptz using meeting_date::timestamptz;

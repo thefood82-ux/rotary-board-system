@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireApprovedMember } from "@/lib/dal";
 import { getMeetingById, getBoardMembers, getMyAttendanceResponse } from "@/lib/data";
+import { formatMeetingDateShort } from "@/lib/dates";
 import AttendanceForm from "@/components/AttendanceForm";
 import { respondAction } from "./actions";
 
@@ -45,7 +46,7 @@ export default async function RespondPage({ params, searchParams }) {
       <h1 className="page-title">내 응답</h1>
 
       <p className="meta-line">
-        {meeting.meeting_date} {meeting.agenda ? `· ${meeting.agenda}` : ""}
+        {formatMeetingDateShort(meeting.meeting_date)} {meeting.agenda ? `· ${meeting.agenda}` : ""}
       </p>
 
       {sp.result && <p className="banner success">{sp.result}</p>}

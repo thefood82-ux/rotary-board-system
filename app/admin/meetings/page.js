@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm, getMeetings } from "@/lib/data";
+import { formatMeetingDateShort } from "@/lib/dates";
 import { createMeetingAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -38,8 +39,8 @@ export default async function MeetingsAdminPage({ searchParams }) {
             </p>
             <form action={createMeetingAction} className="stack-form">
               <label>
-                날짜
-                <input type="date" name="meeting_date" required />
+                날짜/시간
+                <input type="datetime-local" name="meeting_datetime" required />
               </label>
               <label>
                 안건
@@ -57,7 +58,7 @@ export default async function MeetingsAdminPage({ searchParams }) {
               <table>
                 <thead>
                   <tr>
-                    <th>날짜</th>
+                    <th>일시</th>
                     <th>안건</th>
                     <th>상태</th>
                     <th></th>
@@ -66,7 +67,7 @@ export default async function MeetingsAdminPage({ searchParams }) {
                 <tbody>
                   {meetings.map((m) => (
                     <tr key={m.id}>
-                      <td>{m.meeting_date}</td>
+                      <td>{formatMeetingDateShort(m.meeting_date)}</td>
                       <td>{m.agenda || "-"}</td>
                       <td>
                         <span className={`badge badge-${m.status}`}>{STATUS_BADGE_TEXT[m.status]}</span>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
 import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
 import { calculateQuorum } from "@/lib/quorum";
+import { formatMeetingDateShort } from "@/lib/dates";
 import { closeMeetingAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +66,7 @@ export default async function MeetingStatusPage({ params, searchParams }) {
       <h1 className="page-title">성원현황</h1>
 
       <p className="meta-line">
-        {meeting.meeting_date} {meeting.agenda ? `· ${meeting.agenda}` : ""} ·{" "}
+        {formatMeetingDateShort(meeting.meeting_date)} {meeting.agenda ? `· ${meeting.agenda}` : ""} ·{" "}
         <span className={`badge badge-${meeting.status}`}>{meeting.status === "open" ? "진행중" : "마감됨"}</span>
       </p>
 
