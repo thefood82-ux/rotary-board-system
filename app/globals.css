@@ -239,6 +239,54 @@ a {
   margin-bottom: 1.25rem;
 }
 
+.install-app-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+  background: var(--rotary-gold);
+  color: #fff;
+}
+
+.install-app-btn:hover {
+  background: var(--rotary-gold-dark);
+}
+
+.install-guide-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 47, 99, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 1000;
+}
+
+.install-guide-box {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 1.5rem;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.install-guide-box h3 {
+  margin-top: 0;
+  color: var(--rotary-blue-dark);
+}
+
+.install-guide-box ol {
+  padding-left: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.install-guide-box .btn-secondary {
+  width: 100%;
+}
+
 .card h2 {
   font-size: 1.05rem;
   color: var(--rotary-blue-dark);

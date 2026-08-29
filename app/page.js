@@ -3,6 +3,7 @@ import { getSessionUser, getSessionProfile } from "@/lib/dal";
 import { getCurrentTerm, getMeetings, getLatestAnnouncement, getMeetingIdsWithMinutes } from "@/lib/data";
 import { formatMeetingDateShort } from "@/lib/dates";
 import { computeMeetingSequence } from "@/lib/minutes";
+import InstallAppButton from "@/components/InstallAppButton";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,8 @@ export default async function HomePage({ searchParams }) {
   return (
     <main>
       <h1 className="page-title">새송탄로타리클럽 26-27년도 이사회</h1>
+
+      <InstallAppButton />
 
       {sp.error && <p className="banner error">{sp.error}</p>}
 
