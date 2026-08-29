@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm } from "@/lib/data";
-import { createMeeting, deleteMeeting } from "@/lib/mutations";
+import { createMeeting, updateMeeting, deleteMeeting } from "@/lib/mutations";
 import { toKoreaIsoString } from "@/lib/dates";
 
 // Server Action은 URL을 알면 누구나 직접 POST할 수 있으므로, UI에서 버튼을 숨겼더라도
@@ -42,6 +42,28 @@ export async function createMeetingAction(formData) {
 
   revalidatePath("/admin/meetings");
   redirect(`/admin/meetings?result=${encodeURIComponent("회의를 등록했습니다.")}`);
+}
+
+export async function updateMeetingAction(formData) {
+  await requireAdmin();
+  const id = formData.get("id");
+  const meetingDateTimeLocal = (formData.get("meeting_datetime") || "").toString();
+  const agenda = (formData.get("agenda") || "").toString().trim();
+
+  if (!id || !meetingDateTimeLocal) {
+    redirect(`/admin/meetings?error=${encodeURIComponent("날짜와 시간을 입력해주세요.")}`);
+    return;
+  }
+
+  try {
+    await updateMeeting({ id, meetingDateTime: toKoreaIsoString(meetingDateTimeLocal), agenda });
+  } catch (err) {
+    redirect(`/admin/meetings?error=${encodeURIComponent(err.message)}`);
+    return;
+  }
+
+  revalidatePath("/admin/meetings");
+  redirect(`/admin/meetings?result=${encodeURIComponent("회의 정보를 수정했습니다.")}`);
 }
 
 export async function deleteMeetingAction(formData) {

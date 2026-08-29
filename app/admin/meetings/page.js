@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm, getMeetings } from "@/lib/data";
-import { formatMeetingDateShort, formatTermYearLabel } from "@/lib/dates";
-import DeleteMeetingButton from "@/components/DeleteMeetingButton";
-import { createMeetingAction, deleteMeetingAction } from "./actions";
+import { formatTermYearLabel } from "@/lib/dates";
+import MeetingsTable from "@/components/MeetingsTable";
+import CreateMeetingSubmitButton from "@/components/CreateMeetingSubmitButton";
+import { createMeetingAction, updateMeetingAction, deleteMeetingAction } from "./actions";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_BADGE_TEXT = { open: "진행중", closed: "마감됨" };
 
 export default async function MeetingsAdminPage({ searchParams }) {
   await requireAdmin();
@@ -52,7 +51,7 @@ export default async function MeetingsAdminPage({ searchParams }) {
                   placeholder="예: 26-27년도 1차 정기이사회"
                 />
               </label>
-              <button type="submit">등록</button>
+              <CreateMeetingSubmitButton />
             </form>
           </section>
 
@@ -61,36 +60,7 @@ export default async function MeetingsAdminPage({ searchParams }) {
             {meetings.length === 0 ? (
               <p className="empty-state">등록된 회의가 없습니다.</p>
             ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>일시</th>
-                    <th>안건</th>
-                    <th>상태</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {meetings.map((m) => (
-                    <tr key={m.id}>
-                      <td>{formatMeetingDateShort(m.meeting_date)}</td>
-                      <td>{m.agenda || "-"}</td>
-                      <td>
-                        <span className={`badge badge-${m.status}`}>{STATUS_BADGE_TEXT[m.status]}</span>
-                      </td>
-                      <td className="row-actions">
-                        <Link href={`/admin/meetings/${m.id}/status`} className="btn btn-secondary">
-                          성원현황
-                        </Link>
-                        <Link href={`/meetings/${m.id}/respond`} className="btn btn-secondary">
-                          내 응답
-                        </Link>
-                        <DeleteMeetingButton meetingId={m.id} agenda={m.agenda} action={deleteMeetingAction} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <MeetingsTable meetings={meetings} updateAction={updateMeetingAction} deleteAction={deleteMeetingAction} />
             )}
           </section>
         </>
