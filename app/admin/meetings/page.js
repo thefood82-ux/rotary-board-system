@@ -32,28 +32,30 @@ export default async function MeetingsAdminPage({ searchParams }) {
         </section>
       ) : (
         <>
-          <section className="card">
-            <h2>새 회의 등록</h2>
-            <p className="meta-line">
-              현재 회기: <strong>{formatTermYearLabel(currentTerm.name)}</strong>
-            </p>
-            <form action={createMeetingAction} className="stack-form stack-form-wide">
-              <label>
-                날짜/시간
-                <input type="datetime-local" name="meeting_datetime" required />
-              </label>
-              <label>
-                안건
-                <textarea
-                  name="agenda"
-                  className="minutes-textarea"
-                  rows={4}
-                  placeholder="예: 26-27년도 1차 정기이사회"
-                />
-              </label>
-              <CreateMeetingSubmitButton />
-            </form>
-          </section>
+          <div className="minutes-doc">
+            <div className="minutes-doc-header">
+              <p className="eyebrow">ROTARY INTERNATIONAL DIST. 3750</p>
+              <h1>이사회 소집 공고</h1>
+            </div>
+            <div className="minutes-doc-body">
+              <p className="meta-line">
+                현재 회기: <strong>{formatTermYearLabel(currentTerm.name)}</strong>
+              </p>
+              <form action={createMeetingAction} className="stack-form stack-form-wide">
+                <label>
+                  날짜/시간
+                  <input type="datetime-local" name="meeting_datetime" required />
+                </label>
+                <label>
+                  안건
+                  <div className="minutes-doc-editable-box">
+                    <textarea name="agenda" rows={5} placeholder="예: 1) 안건 하나&#10;2) 안건 둘" />
+                  </div>
+                </label>
+                <CreateMeetingSubmitButton />
+              </form>
+            </div>
+          </div>
 
           <section className="card">
             <h2>등록된 회의 ({meetings.length}건)</h2>
