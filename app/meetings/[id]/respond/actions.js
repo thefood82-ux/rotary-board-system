@@ -15,9 +15,7 @@ export async function respondAction(formData) {
   const delegateToId = formData.get("delegate_to_id") || null;
 
   if (!profile?.board_member_id) {
-    redirect(
-      `/meetings/${meetingId}/respond?error=${encodeURIComponent("계정에 매칭된 명부 인물이 없습니다. 관리자에게 문의해주세요.")}`
-    );
+    redirect(`/?error=${encodeURIComponent("응답 대상이 아닙니다.")}`);
     return;
   }
 

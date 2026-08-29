@@ -4,14 +4,17 @@ import { getCurrentTerm, getMeetings } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }) {
+  const sp = (await searchParams) || {};
   const user = await getSessionUser();
   const profile = user ? await getSessionProfile(user.id) : null;
   const isApproved = profile?.approval_status === "approved";
   const isAdmin = profile?.role === "admin";
+  // 사무장/스태프 계정(board_member_id=null)은 이사회 응답 대상이 아니다.
+  const isBoardMember = Boolean(profile?.board_member_id);
 
   let openMeetings = [];
-  if (isApproved) {
+  if (isApproved && isBoardMember) {
     const currentTerm = await getCurrentTerm();
     if (currentTerm) {
       const meetings = await getMeetings(currentTerm.id);
@@ -22,6 +25,9 @@ export default async function HomePage() {
   return (
     <main>
       <h1 className="page-title">새송탄로타리클럽 26-27년도 이사회</h1>
+
+      {sp.error && <p className="banner error">{sp.error}</p>}
+
       <nav className="home-links">
         {!user && (
           <>

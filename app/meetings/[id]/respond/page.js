@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requireApprovedMember } from "@/lib/dal";
 import { getMeetingById, getBoardMembers, getMyAttendanceResponse } from "@/lib/data";
 import AttendanceForm from "@/components/AttendanceForm";
@@ -10,6 +11,10 @@ const STATUS_LABEL = { attend: "참석", delegate: "위임", absent: "불참" };
 
 export default async function RespondPage({ params, searchParams }) {
   const { profile } = await requireApprovedMember();
+  // 사무장/스태프 계정(board_member_id=null)은 응답 대상이 아니다 — 에러 화면 대신 홈으로.
+  if (!profile.board_member_id) {
+    redirect(`/?error=${encodeURIComponent("응답 대상이 아닙니다.")}`);
+  }
   const { id } = await params;
   const sp = (await searchParams) || {};
 
@@ -28,9 +33,9 @@ export default async function RespondPage({ params, searchParams }) {
 
   const [members, myResponse] = await Promise.all([
     getBoardMembers(meeting.term_id),
-    profile?.board_member_id ? getMyAttendanceResponse(id, profile.board_member_id) : null,
+    getMyAttendanceResponse(id, profile.board_member_id),
   ]);
-  const delegateOptions = members.filter((m) => m.id !== profile?.board_member_id);
+  const delegateOptions = members.filter((m) => m.id !== profile.board_member_id);
 
   return (
     <main>
@@ -47,9 +52,7 @@ export default async function RespondPage({ params, searchParams }) {
       {sp.error && <p className="banner error">{sp.error}</p>}
 
       <section className="card">
-        {!profile?.board_member_id ? (
-          <p className="empty-state">계정에 매칭된 명부 인물이 없습니다. 관리자에게 문의해주세요.</p>
-        ) : meeting.status === "closed" ? (
+        {meeting.status === "closed" ? (
           <>
             <p className="banner error">마감되어 수정할 수 없습니다.</p>
             {myResponse && (

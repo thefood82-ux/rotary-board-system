@@ -37,7 +37,7 @@ export default async function ApprovalsPage({ searchParams }) {
               {pending.map((p) => (
                 <tr key={p.id}>
                   <td>{p.email}</td>
-                  <td>{p.board_members ? `${p.board_members.name} (${p.board_members.position})` : "-"}</td>
+                  <td>{p.board_members ? `${p.board_members.name} (${p.board_members.position})` : "사무장/스태프 신청"}</td>
                   <td>{new Date(p.created_at).toLocaleString("ko-KR")}</td>
                   <td className="row-actions">
                     <form action={approveProfileAction}>

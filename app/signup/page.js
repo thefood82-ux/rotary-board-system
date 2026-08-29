@@ -22,8 +22,6 @@ export default async function SignupPage({ searchParams }) {
       <section className="card">
         {!currentTerm ? (
           <p className="empty-state">아직 활성 회기가 없어 회원가입을 받을 수 없습니다. 관리자에게 문의해주세요.</p>
-        ) : members.length === 0 ? (
-          <p className="empty-state">가입 가능한 명부 인물이 없습니다. 관리자에게 문의해주세요.</p>
         ) : (
           <form action={signupAction} className="stack-form">
             <label>
@@ -40,6 +38,7 @@ export default async function SignupPage({ searchParams }) {
                 <option value="" disabled>
                   선택해주세요
                 </option>
+                <option value="staff">해당 없음 (사무장/스태프)</option>
                 {members.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.name} ({m.position})

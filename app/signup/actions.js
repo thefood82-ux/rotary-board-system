@@ -29,8 +29,11 @@ export async function signupAction(formData) {
     return;
   }
 
+  // "staff"는 명부에 없는 사무장/스태프용 선택지 — board_member_id는 null로 저장한다.
+  const resolvedBoardMemberId = boardMemberId === "staff" ? null : boardMemberId;
+
   try {
-    await createProfile({ id: userId, email, boardMemberId });
+    await createProfile({ id: userId, email, boardMemberId: resolvedBoardMemberId });
   } catch (err) {
     redirect(
       `/signup?error=${encodeURIComponent(`계정은 생성됐지만 명부 매칭에 실패했습니다: ${err.message}`)}`

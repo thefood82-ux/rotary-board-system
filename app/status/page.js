@@ -22,8 +22,11 @@ export default async function StatusPage({ searchParams }) {
   const user = await requireUser();
   const profile = await getSessionProfile(user.id);
   const currentTerm = await getCurrentTerm();
+  const isBoardMember = Boolean(profile?.board_member_id);
   const meetings =
-    profile?.approval_status === "approved" && currentTerm ? await getMeetings(currentTerm.id) : [];
+    profile?.approval_status === "approved" && isBoardMember && currentTerm
+      ? await getMeetings(currentTerm.id)
+      : [];
 
   return (
     <main>
@@ -42,7 +45,9 @@ export default async function StatusPage({ searchParams }) {
         ) : (
           <>
             <p>
-              선택한 명부 인물: {profile.board_members?.name} ({profile.board_members?.position})
+              {isBoardMember
+                ? `선택한 명부 인물: ${profile.board_members?.name} (${profile.board_members?.position})`
+                : "사무장/스태프 계정입니다 (재적 이사회 응답 대상 아님)."}
             </p>
             <p>
               <span className={`badge badge-${profile.approval_status}`}>
@@ -54,7 +59,7 @@ export default async function StatusPage({ searchParams }) {
         )}
       </section>
 
-      {profile?.approval_status === "approved" && (
+      {profile?.approval_status === "approved" && isBoardMember && (
         <section className="card">
           <h2>이사회 소집 목록</h2>
           {meetings.length === 0 ? (
