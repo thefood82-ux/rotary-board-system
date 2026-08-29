@@ -13,6 +13,7 @@ const STATUS_TEXT = {
 
 export default function MinutesEditor({
   meetingId,
+  seq,
   initialAuthor,
   initialMeetingTitle,
   meetingDateTimeText,
@@ -66,46 +67,58 @@ export default function MinutesEditor({
     <div>
       <div className={`autosave-status autosave-${status}`}>{STATUS_TEXT[status]}</div>
 
-      <div className="stack-form">
-        <label>
-          작성자
-          <input value={author} onChange={field("author", setAuthor)} />
-        </label>
-        <label>
-          회의명
-          <input value={meetingTitle} onChange={field("meetingTitle", setMeetingTitle)} />
-        </label>
-        <label>
-          일시
-          <input value={meetingDateTimeText} readOnly />
-        </label>
-        <label>
-          성원보고
-          <textarea
-            className="minutes-textarea"
-            rows={4}
-            value={quorumReportText}
-            onChange={field("quorumReportText", setQuorumReportText)}
-          />
-        </label>
-        <label>
-          출석 및 성원 상세 현황
-          <textarea
-            className="minutes-textarea"
-            rows={10}
-            value={attendanceDetailText}
-            onChange={field("attendanceDetailText", setAttendanceDetailText)}
-          />
-        </label>
-        <label>
-          심의 및 의결 사항
-          <textarea
-            className="minutes-textarea"
-            rows={10}
-            value={resolutionText}
-            onChange={field("resolutionText", setResolutionText)}
-          />
-        </label>
+      <div className="minutes-doc">
+        <div className="minutes-doc-header">
+          <p className="eyebrow">ROTARY INTERNATIONAL DIST. 3750</p>
+          <h1>제{seq}차 정기이사회 회의록</h1>
+        </div>
+
+        <div className="minutes-doc-body">
+          <table className="minutes-doc-meta-table">
+            <tbody>
+              <tr>
+                <th>작성자</th>
+                <td>
+                  <input value={author} onChange={field("author", setAuthor)} placeholder="예: 총무 임상재" />
+                </td>
+              </tr>
+              <tr>
+                <th>회의명</th>
+                <td>
+                  <input value={meetingTitle} onChange={field("meetingTitle", setMeetingTitle)} />
+                </td>
+              </tr>
+              <tr>
+                <th>일시</th>
+                <td className="minutes-doc-readonly-value">{meetingDateTimeText}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 className="minutes-doc-section-title">성원보고</h2>
+          <div className="minutes-doc-quorum-box">
+            <textarea rows={3} value={quorumReportText} onChange={field("quorumReportText", setQuorumReportText)} />
+          </div>
+
+          <h2 className="minutes-doc-section-title">출석 및 성원 상세 현황</h2>
+          <div className="minutes-doc-editable-box">
+            <textarea
+              rows={8}
+              value={attendanceDetailText}
+              onChange={field("attendanceDetailText", setAttendanceDetailText)}
+            />
+          </div>
+          <p className="hint">
+            "그룹명(정원) 참석: 이름 / 위임: 이름 → 받는사람 / 불참: 이름" 형식으로 한 줄씩 쓰면 회의록 보기 화면에서 표로
+            정리되어 보입니다.
+          </p>
+
+          <h2 className="minutes-doc-section-title">심의 및 의결 사항</h2>
+          <div className="minutes-doc-editable-box">
+            <textarea rows={10} value={resolutionText} onChange={field("resolutionText", setResolutionText)} />
+          </div>
+          <p className="hint">"1) ...", "2) ..." 형식으로 번호를 붙이면 회의록 보기 화면에서 번호 목록으로 정리되어 보입니다.</p>
+        </div>
       </div>
 
       <div className="row-actions" style={{ marginTop: "0.9rem" }}>

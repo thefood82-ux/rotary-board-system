@@ -803,6 +803,75 @@ a.btn-gold {
   white-space: pre-wrap;
 }
 
+/* 회의록 작성 화면(초안) — 공식 문서와 같은 모양이지만 입력 가능한 상태 */
+
+.minutes-doc-meta-table td input {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 0.25rem 0.4rem;
+  font: inherit;
+  color: inherit;
+  border-radius: 4px;
+}
+
+.minutes-doc-meta-table td input:hover {
+  border-color: var(--border);
+}
+
+.minutes-doc-meta-table td input:focus {
+  border-color: var(--rotary-blue);
+  background: #fff;
+  outline: none;
+}
+
+.minutes-doc-readonly-value {
+  color: var(--text-muted);
+}
+
+.minutes-doc-quorum-box textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  padding: 0.3rem 0.4rem;
+  resize: vertical;
+}
+
+.minutes-doc-quorum-box textarea:hover {
+  border-color: rgba(23, 69, 143, 0.3);
+}
+
+.minutes-doc-quorum-box textarea:focus {
+  border-color: var(--rotary-blue);
+  background: #fff;
+  outline: none;
+}
+
+.minutes-doc-editable-box {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem;
+}
+
+.minutes-doc-editable-box textarea {
+  width: 100%;
+  border: none;
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+  padding: 0.5rem;
+}
+
+.minutes-doc-editable-box textarea:focus {
+  outline: none;
+  background: var(--rotary-blue-light);
+  border-radius: 6px;
+}
+
 .meeting-list-item {
   display: flex;
   justify-content: space-between;
