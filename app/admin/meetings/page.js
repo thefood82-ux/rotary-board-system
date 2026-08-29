@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm, getMeetings } from "@/lib/data";
-import { formatMeetingDateShort } from "@/lib/dates";
-import { createMeetingAction } from "./actions";
+import { formatMeetingDateShort, formatTermYearLabel } from "@/lib/dates";
+import DeleteMeetingButton from "@/components/DeleteMeetingButton";
+import { createMeetingAction, deleteMeetingAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,7 @@ export default async function MeetingsAdminPage({ searchParams }) {
           <section className="card">
             <h2>새 회의 등록</h2>
             <p className="meta-line">
-              현재 회기: <strong>{currentTerm.name}</strong>
+              현재 회기: <strong>{formatTermYearLabel(currentTerm.name)}</strong>
             </p>
             <form action={createMeetingAction} className="stack-form stack-form-wide">
               <label>
@@ -84,6 +85,7 @@ export default async function MeetingsAdminPage({ searchParams }) {
                         <Link href={`/meetings/${m.id}/respond`} className="btn btn-secondary">
                           내 응답
                         </Link>
+                        <DeleteMeetingButton meetingId={m.id} agenda={m.agenda} action={deleteMeetingAction} />
                       </td>
                     </tr>
                   ))}

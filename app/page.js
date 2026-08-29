@@ -20,6 +20,22 @@ function getMinutesViewHref(meeting, user) {
   return user ? `/meetings/${meeting.id}/minutes` : "/login";
 }
 
+// 번호 매긴 안건("1. ...\n2. ...")은 첫 항목만 보여주고 "외 N건"으로 줄인다.
+// 번호가 없는 일반 텍스트는 첫 줄만 보여준다(나머지는 CSS 한 줄 말줄임으로 자연히 잘림).
+function summarizeAgenda(agenda) {
+  if (!agenda) return "-";
+  const lines = agenda
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const itemRe = /^\d+[.)]\s*(.+)$/;
+  const items = lines.map((l) => l.match(itemRe)?.[1]).filter(Boolean);
+
+  if (items.length >= 2) return `${items[0]} 외 ${items.length - 1}건`;
+  if (items.length === 1) return items[0];
+  return lines[0] || "-";
+}
+
 export default async function HomePage({ searchParams }) {
   const sp = (await searchParams) || {};
   const user = await getSessionUser();
@@ -93,7 +109,7 @@ export default async function HomePage({ searchParams }) {
                 <Link href={getMeetingHref(m, { user, profile })} className="meeting-board-main">
                   <span className="meeting-board-seq">{seqByMeetingId.get(m.id)}차</span>
                   <span className="meeting-board-datetime">{formatMeetingDateShort(m.meeting_date)}</span>
-                  <span className="meeting-board-agenda">{m.agenda || "-"}</span>
+                  <span className="meeting-board-agenda">{summarizeAgenda(m.agenda)}</span>
                 </Link>
                 {meetingIdsWithMinutes.has(m.id) && (
                   <Link href={getMinutesViewHref(m, user)} className="meeting-board-minutes-link">

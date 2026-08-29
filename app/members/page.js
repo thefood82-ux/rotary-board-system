@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/dal";
 import { getCurrentTerm, getBoardMembers } from "@/lib/data";
+import { formatTermYearLabel } from "@/lib/dates";
 import BoardMemberTable from "@/components/BoardMemberTable";
 import { createCurrentTermAction, addBoardMemberAction, updateBoardMemberAction, deleteBoardMemberAction } from "./actions";
 
@@ -37,7 +38,7 @@ export default async function MembersPage({ searchParams }) {
       ) : (
         <>
           <p className="meta-line">
-            현재 회기: <strong>{currentTerm.name}</strong>
+            현재 회기: <strong>{formatTermYearLabel(currentTerm.name)}</strong>
           </p>
           <BoardMemberTable
             termId={currentTerm.id}

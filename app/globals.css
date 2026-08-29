@@ -671,6 +671,7 @@ a.btn-gold {
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+  font-size: 0.88rem;
 }
 
 .minutes-doc {
