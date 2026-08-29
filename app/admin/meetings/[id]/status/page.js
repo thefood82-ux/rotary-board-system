@@ -3,7 +3,8 @@ import { requireAdmin } from "@/lib/dal";
 import { getMeetingById, getBoardMembers, getAttendanceResponses, getMeetingMinutes } from "@/lib/data";
 import { calculateQuorum } from "@/lib/quorum";
 import { formatMeetingDateShort } from "@/lib/dates";
-import { closeMeetingAction } from "./actions";
+import AdminAttendanceEditor from "@/components/AdminAttendanceEditor";
+import { closeMeetingAction, adminSetAttendanceAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -107,6 +108,17 @@ export default async function MeetingStatusPage({ params, searchParams }) {
             </button>
           </form>
         )}
+      </section>
+
+      <section className="card">
+        <h2>응답 입력/수정</h2>
+        <p className="hint">전화 등으로 접수한 응답은 여기서 바로 입력하거나 고칠 수 있습니다. 선택하면 바로 저장됩니다.</p>
+        <AdminAttendanceEditor
+          meetingId={meeting.id}
+          roster={roster}
+          responsesByMemberId={Object.fromEntries(responseByMemberId)}
+          setAction={adminSetAttendanceAction}
+        />
       </section>
 
       <section className="card">

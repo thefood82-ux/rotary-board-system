@@ -872,6 +872,23 @@ a.btn-gold {
   border-radius: 6px;
 }
 
+.admin-attendance-row-status {
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.admin-attendance-row-saved {
+  color: var(--success-text);
+}
+
+.admin-attendance-row-saving {
+  color: var(--text-muted);
+}
+
+.admin-attendance-row-error {
+  color: var(--error-text);
+}
+
 .meeting-list-item {
   display: flex;
   justify-content: space-between;
