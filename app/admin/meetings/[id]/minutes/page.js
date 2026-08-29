@@ -45,25 +45,26 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
   const seq = computeMeetingSequence(meetingsInTerm).get(meeting.id) ?? "?";
   const meetingDateTimeText = formatMeetingDateLong(meeting.meeting_date);
 
+  // 성원보고/출석현황은 회의록이 초안인 동안 항상 성원현황(roster+responses) 기준 최신값을 쓴다 —
+  // 저장된 스냅샷이 있어도 무시하고 매번 새로 계산해서, 성원현황에서 체크를 바꾸면 바로 반영되게 한다.
+  const summary = buildAttendanceSummary(roster, responses);
+  const quorumReportText = buildQuorumReportText(summary);
+  const attendanceDetailText = buildAttendanceDetailText(roster, responses);
+
   let fields;
   if (existing) {
     fields = parseMinutesContent(existing.content) || {
       author: "",
       meetingTitle: "",
-      quorumReportText: "",
-      attendanceDetailText: "",
       resolutionText: "",
     };
   } else {
     // 작성자 기본값: 로그인한 관리자 본인의 명부 직책+이름 (명부에 없는 사무장 계정이면 빈 값 - 직접 입력).
     const authorDefault = profile.board_members ? `${profile.board_members.position} ${profile.board_members.name}` : "";
-    const summary = buildAttendanceSummary(roster, responses);
 
     fields = {
       author: authorDefault,
       meetingTitle: buildMeetingTitle(term?.name, seq),
-      quorumReportText: buildQuorumReportText(summary),
-      attendanceDetailText: buildAttendanceDetailText(roster, responses),
       resolutionText: "",
     };
   }
@@ -109,8 +110,8 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
           initialAuthor={fields.author}
           initialMeetingTitle={fields.meetingTitle}
           meetingDateTimeText={meetingDateTimeText}
-          initialQuorumReportText={fields.quorumReportText}
-          initialAttendanceDetailText={fields.attendanceDetailText}
+          quorumReportText={quorumReportText}
+          attendanceDetailText={attendanceDetailText}
           initialResolutionText={fields.resolutionText}
           autosaveAction={autosaveMinutesContent}
           finalizeAction={finalizeMinutesAction}

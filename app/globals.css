@@ -729,78 +729,134 @@ a.btn-gold {
 .minutes-doc-header {
   background: linear-gradient(135deg, var(--rotary-blue) 0%, var(--rotary-blue-dark) 100%);
   color: #fff;
-  padding: 1.6rem 1.75rem;
+  padding: 2rem 1.75rem 1.85rem;
   text-align: center;
   border-bottom: 4px solid var(--rotary-gold);
 }
 
 .minutes-doc-header .eyebrow {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.6rem;
   font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  opacity: 0.85;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  opacity: 0.8;
 }
 
 .minutes-doc-header h1 {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 .minutes-doc-body {
-  padding: 1.75rem;
+  padding: 2rem 1.9rem 2.25rem;
+  font-size: 0.98rem;
+  line-height: 1.75;
 }
 
 .minutes-doc-meta-table {
   width: 100%;
   margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.minutes-doc-meta-table th,
+.minutes-doc-meta-table td {
+  padding: 0.7rem 1rem;
 }
 
 .minutes-doc-meta-table th {
-  background: var(--rotary-blue-light);
+  background: #f6f8fc;
   color: var(--rotary-blue-dark);
-  width: 6rem;
+  width: 6.5rem;
   text-align: left;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.minutes-doc-meta-table td {
+  font-weight: 500;
 }
 
 .minutes-doc-section-title {
-  font-size: 1.05rem;
+  font-size: 1.12rem;
+  font-weight: 800;
   color: var(--rotary-blue-dark);
+  letter-spacing: 0.01em;
   border-bottom: 2px solid var(--rotary-gold);
-  padding-bottom: 0.4rem;
-  margin: 1.75rem 0 0.9rem;
+  padding-bottom: 0.5rem;
+  margin: 2.25rem 0 1.1rem;
 }
 
 .minutes-doc-quorum-box {
   background: #e6f1fb;
   border: 1px solid var(--rotary-blue);
   border-radius: 8px;
-  padding: 1rem 1.25rem;
+  padding: 1.1rem 1.35rem;
+  font-size: 1.02rem;
   font-weight: 600;
+  line-height: 1.7;
   color: var(--rotary-blue-dark);
+}
+
+.minutes-doc-attendance-table {
+  font-size: 0.94rem;
+}
+
+.minutes-doc-attendance-table th,
+.minutes-doc-attendance-table td {
+  padding: 0.75rem 0.9rem;
+  line-height: 1.6;
 }
 
 .minutes-doc-attendance-table th {
   background: var(--rotary-blue);
   color: #fff;
+  font-weight: 700;
 }
 
 .minutes-doc-extra-text {
   white-space: pre-wrap;
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-top: 0.6rem;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin-top: 0.7rem;
 }
 
 .minutes-doc-resolution-list {
-  padding-left: 1.4rem;
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+  counter-reset: minutes-resolution;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  margin: 0;
+  gap: 1.2rem;
 }
 
 .minutes-doc-resolution-list li {
+  counter-increment: minutes-resolution;
+  position: relative;
+  padding-left: 2.1rem;
   white-space: pre-wrap;
+  line-height: 1.75;
+}
+
+.minutes-doc-resolution-list li::before {
+  content: counter(minutes-resolution);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--rotary-blue);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 /* 회의록 작성 화면(초안) — 공식 문서와 같은 모양이지만 입력 가능한 상태 */

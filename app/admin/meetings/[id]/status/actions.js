@@ -50,5 +50,6 @@ export async function adminSetAttendanceAction(meetingId, boardMemberId, status,
   }
 
   revalidatePath(`/admin/meetings/${meetingId}/status`);
+  revalidatePath(`/admin/meetings/${meetingId}/minutes`);
   return { ok: true };
 }

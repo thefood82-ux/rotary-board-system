@@ -17,16 +17,14 @@ export default function MinutesEditor({
   initialAuthor,
   initialMeetingTitle,
   meetingDateTimeText,
-  initialQuorumReportText,
-  initialAttendanceDetailText,
+  quorumReportText,
+  attendanceDetailText,
   initialResolutionText,
   autosaveAction,
   finalizeAction,
 }) {
   const [author, setAuthor] = useState(initialAuthor);
   const [meetingTitle, setMeetingTitle] = useState(initialMeetingTitle);
-  const [quorumReportText, setQuorumReportText] = useState(initialQuorumReportText);
-  const [attendanceDetailText, setAttendanceDetailText] = useState(initialAttendanceDetailText);
   const [resolutionText, setResolutionText] = useState(initialResolutionText);
   const [status, setStatus] = useState("saved");
 
@@ -34,8 +32,6 @@ export default function MinutesEditor({
   const latestRef = useRef({
     author: initialAuthor,
     meetingTitle: initialMeetingTitle,
-    quorumReportText: initialQuorumReportText,
-    attendanceDetailText: initialAttendanceDetailText,
     resolutionText: initialResolutionText,
   });
 
@@ -96,22 +92,13 @@ export default function MinutesEditor({
           </table>
 
           <h2 className="minutes-doc-section-title">성원보고</h2>
-          <div className="minutes-doc-quorum-box">
-            <textarea rows={3} value={quorumReportText} onChange={field("quorumReportText", setQuorumReportText)} />
-          </div>
+          <div className="minutes-doc-quorum-box minutes-doc-readonly-value">{quorumReportText}</div>
 
           <h2 className="minutes-doc-section-title">출석 및 성원 상세 현황</h2>
-          <div className="minutes-doc-editable-box">
-            <textarea
-              rows={8}
-              value={attendanceDetailText}
-              onChange={field("attendanceDetailText", setAttendanceDetailText)}
-            />
+          <div className="minutes-doc-editable-box minutes-doc-readonly-value" style={{ whiteSpace: "pre-wrap" }}>
+            {attendanceDetailText}
           </div>
-          <p className="hint">
-            "그룹명(정원) 참석: 이름 / 위임: 이름 → 받는사람 / 불참: 이름" 형식으로 한 줄씩 쓰면 회의록 보기 화면에서 표로
-            정리되어 보입니다.
-          </p>
+          <p className="hint">성원현황 페이지의 응답 입력/수정에 따라 자동으로 반영됩니다.</p>
 
           <h2 className="minutes-doc-section-title">심의 및 의결 사항</h2>
           <div className="minutes-doc-editable-box">
@@ -126,8 +113,6 @@ export default function MinutesEditor({
           <input type="hidden" name="meeting_id" value={meetingId} />
           <input type="hidden" name="author" value={author} readOnly />
           <input type="hidden" name="meeting_title" value={meetingTitle} readOnly />
-          <input type="hidden" name="quorum_report_text" value={quorumReportText} readOnly />
-          <input type="hidden" name="attendance_detail_text" value={attendanceDetailText} readOnly />
           <input type="hidden" name="resolution_text" value={resolutionText} readOnly />
           <button type="submit" className="btn-gold">
             확정

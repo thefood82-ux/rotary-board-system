@@ -11,3 +11,5 @@ out/
 # 로그/캐시
 npm-debug.log*
 .DS_Store
+
+.vercel
