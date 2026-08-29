@@ -80,7 +80,7 @@ export default function MinutesEditor({
           <input value={meetingDateTimeText} readOnly />
         </label>
         <label>
-          1. 성원보고
+          성원보고
           <textarea
             className="minutes-textarea"
             rows={4}
@@ -89,7 +89,7 @@ export default function MinutesEditor({
           />
         </label>
         <label>
-          2. 출석 및 성원 상세 현황
+          출석 및 성원 상세 현황
           <textarea
             className="minutes-textarea"
             rows={10}
@@ -98,7 +98,7 @@ export default function MinutesEditor({
           />
         </label>
         <label>
-          3. 심의 및 의결 사항
+          심의 및 의결 사항
           <textarea
             className="minutes-textarea"
             rows={10}

@@ -614,23 +614,40 @@ a.btn-gold {
 }
 
 .meeting-board-item {
-  display: grid;
-  grid-template-columns: 2.6rem auto 1fr;
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
-  align-items: baseline;
-  padding: 0.7rem 0.2rem;
+  padding: 0.35rem 0.2rem;
   border-bottom: 1px solid var(--border);
-  text-decoration: none;
-  color: var(--text);
-  border-radius: 6px;
 }
 
 .meeting-board-item:last-child {
   border-bottom: none;
 }
 
-.meeting-board-item:hover {
+.meeting-board-main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 2.6rem auto 1fr;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.35rem 0.2rem;
+  margin: -0.35rem -0.2rem;
+  text-decoration: none;
+  color: var(--text);
+  border-radius: 6px;
+}
+
+.meeting-board-main:hover {
   background: var(--rotary-blue-light);
+}
+
+.meeting-board-minutes-link {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  color: var(--rotary-blue);
 }
 
 .meeting-board-seq {
@@ -650,6 +667,91 @@ a.btn-gold {
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+}
+
+.minutes-doc {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.minutes-doc-header {
+  background: linear-gradient(135deg, var(--rotary-blue) 0%, var(--rotary-blue-dark) 100%);
+  color: #fff;
+  padding: 1.6rem 1.75rem;
+  text-align: center;
+  border-bottom: 4px solid var(--rotary-gold);
+}
+
+.minutes-doc-header .eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+
+.minutes-doc-header h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.minutes-doc-body {
+  padding: 1.75rem;
+}
+
+.minutes-doc-meta-table {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.minutes-doc-meta-table th {
+  background: var(--rotary-blue-light);
+  color: var(--rotary-blue-dark);
+  width: 6rem;
+  text-align: left;
+}
+
+.minutes-doc-section-title {
+  font-size: 1.05rem;
+  color: var(--rotary-blue-dark);
+  border-bottom: 2px solid var(--rotary-gold);
+  padding-bottom: 0.4rem;
+  margin: 1.75rem 0 0.9rem;
+}
+
+.minutes-doc-quorum-box {
+  background: #e6f1fb;
+  border: 1px solid var(--rotary-blue);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  color: var(--rotary-blue-dark);
+}
+
+.minutes-doc-attendance-table th {
+  background: var(--rotary-blue);
+  color: #fff;
+}
+
+.minutes-doc-extra-text {
+  white-space: pre-wrap;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.6rem;
+}
+
+.minutes-doc-resolution-list {
+  padding-left: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.minutes-doc-resolution-list li {
+  white-space: pre-wrap;
 }
 
 .meeting-list-item {

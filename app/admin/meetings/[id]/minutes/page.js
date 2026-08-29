@@ -80,6 +80,12 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
       <p className="meta-line">
         {formatMeetingDateShort(meeting.meeting_date)} {meeting.agenda ? `· ${meeting.agenda}` : ""} ·{" "}
         <span className={`badge badge-${isFinal ? "approved" : "pending"}`}>{isFinal ? "확정" : "초안"}</span>
+        {existing && (
+          <>
+            {" · "}
+            <Link href={`/meetings/${meeting.id}/minutes`}>회의록 보기 (공식 문서 양식)</Link>
+          </>
+        )}
       </p>
 
       {sp.result && <p className="banner success">{sp.result}</p>}
@@ -108,15 +114,15 @@ export default async function MeetingMinutesPage({ params, searchParams }) {
                 <input value={meetingDateTimeText} readOnly />
               </label>
               <label>
-                1. 성원보고
+                성원보고
                 <textarea className="minutes-textarea" rows={4} defaultValue={fields.quorumReportText} readOnly />
               </label>
               <label>
-                2. 출석 및 성원 상세 현황
+                출석 및 성원 상세 현황
                 <textarea className="minutes-textarea" rows={10} defaultValue={fields.attendanceDetailText} readOnly />
               </label>
               <label>
-                3. 심의 및 의결 사항
+                심의 및 의결 사항
                 <textarea className="minutes-textarea" rows={10} defaultValue={fields.resolutionText} readOnly />
               </label>
             </div>

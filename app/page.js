@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getSessionUser, getSessionProfile } from "@/lib/dal";
-import { getCurrentTerm, getMeetings, getLatestAnnouncement } from "@/lib/data";
+import { getCurrentTerm, getMeetings, getLatestAnnouncement, getMeetingIdsWithMinutes } from "@/lib/data";
 import { formatMeetingDateShort } from "@/lib/dates";
 import { computeMeetingSequence } from "@/lib/minutes";
 
@@ -16,6 +16,10 @@ function getMeetingHref(meeting, { user, profile }) {
   return "/status";
 }
 
+function getMinutesViewHref(meeting, user) {
+  return user ? `/meetings/${meeting.id}/minutes` : "/login";
+}
+
 export default async function HomePage({ searchParams }) {
   const sp = (await searchParams) || {};
   const user = await getSessionUser();
@@ -29,6 +33,7 @@ export default async function HomePage({ searchParams }) {
     currentTerm ? getMeetings(currentTerm.id) : Promise.resolve([]),
     getLatestAnnouncement(),
   ]);
+  const meetingIdsWithMinutes = await getMeetingIdsWithMinutes(meetingsDesc.map((m) => m.id));
 
   // 차수는 컬럼이 아니라 날짜 오름차순 위치로 매 화면에서 계산한다.
   const seqByMeetingId = computeMeetingSequence(meetingsDesc);
@@ -84,11 +89,18 @@ export default async function HomePage({ searchParams }) {
         ) : (
           <div className="meeting-board">
             {meetingsDesc.map((m) => (
-              <Link key={m.id} href={getMeetingHref(m, { user, profile })} className="meeting-board-item">
-                <span className="meeting-board-seq">{seqByMeetingId.get(m.id)}차</span>
-                <span className="meeting-board-datetime">{formatMeetingDateShort(m.meeting_date)}</span>
-                <span className="meeting-board-agenda">{m.agenda || "-"}</span>
-              </Link>
+              <div key={m.id} className="meeting-board-item">
+                <Link href={getMeetingHref(m, { user, profile })} className="meeting-board-main">
+                  <span className="meeting-board-seq">{seqByMeetingId.get(m.id)}차</span>
+                  <span className="meeting-board-datetime">{formatMeetingDateShort(m.meeting_date)}</span>
+                  <span className="meeting-board-agenda">{m.agenda || "-"}</span>
+                </Link>
+                {meetingIdsWithMinutes.has(m.id) && (
+                  <Link href={getMinutesViewHref(m, user)} className="meeting-board-minutes-link">
+                    회의록 보기
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
         )}
