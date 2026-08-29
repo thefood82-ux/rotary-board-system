@@ -42,7 +42,8 @@ function parseResolutionItems(resolutionText) {
 }
 
 export default async function MeetingMinutesViewPage({ params }) {
-  await requireApprovedMember();
+  const { profile } = await requireApprovedMember();
+  const isAdmin = profile?.role === "admin";
   const { id } = await params;
 
   const meeting = await getMeetingById(id);
@@ -66,6 +67,14 @@ export default async function MeetingMinutesViewPage({ params }) {
         ← 홈으로
       </Link>
       <h1 className="page-title">회의록</h1>
+
+      {isAdmin && (
+        <p className="meta-line">
+          <Link href={`/admin/meetings/${id}/minutes`} className="btn btn-secondary">
+            {minutes ? "수정하기" : "회의록 작성하기"}
+          </Link>
+        </p>
+      )}
 
       {!minutes ? (
         <section className="card">
