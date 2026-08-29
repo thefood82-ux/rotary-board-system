@@ -37,14 +37,19 @@ export default async function MeetingsAdminPage({ searchParams }) {
             <p className="meta-line">
               현재 회기: <strong>{currentTerm.name}</strong>
             </p>
-            <form action={createMeetingAction} className="stack-form">
+            <form action={createMeetingAction} className="stack-form stack-form-wide">
               <label>
                 날짜/시간
                 <input type="datetime-local" name="meeting_datetime" required />
               </label>
               <label>
                 안건
-                <input type="text" name="agenda" placeholder="예: 26-27년도 1차 정기이사회" />
+                <textarea
+                  name="agenda"
+                  className="minutes-textarea"
+                  rows={4}
+                  placeholder="예: 26-27년도 1차 정기이사회"
+                />
               </label>
               <button type="submit">등록</button>
             </form>

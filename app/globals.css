@@ -236,6 +236,10 @@ tbody tr:nth-child(even) {
   margin: 1rem 0;
 }
 
+.stack-form-wide {
+  max-width: 640px;
+}
+
 .stack-form label {
   display: flex;
   flex-direction: column;
