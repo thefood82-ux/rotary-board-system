@@ -13,7 +13,7 @@ export const metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "이사회",
+    title: "새송탄재무",
     statusBarStyle: "default",
   },
   // appleWebApp.capable는 "mobile-web-app-capable"만 만드는데, iOS Safari는 아직
