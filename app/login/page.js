@@ -21,6 +21,9 @@ export default async function LoginPage({ searchParams }) {
       <p>
         <Link href="/signup">계정이 없으신가요? 회원가입</Link>
       </p>
+      <p>
+        <Link href="/forgot-password">비밀번호를 잊으셨나요?</Link>
+      </p>
     </main>
   );
 }
